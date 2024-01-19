@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Sign In
+{% endblock %}
+
+{% block main %}
+<div>
+  <img src="/static/android-chrome-192x192.png">
+  <h1 class="text-center">Welcome to Mersal</h1> 
+  <br><br>
+</div>
+<form action="/signin" method="post">
+  <div class="mb-3">
+      <input autocomplete="off" autofocus class="form-control mx-auto w-auto" name="username" placeholder="Username" type="text">
+  </div>
+  <div class="mb-3">
+      <input class="form-control mx-auto w-auto" name="password" placeholder="Password" type="password">
+  </div>
+  <button class="btn btn-primary" type="submit">Sign In</button>
+</form>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block main %}
+{%if imgdata%}
+<img class="avtar border border-warning-subtle border border-5" src="data:{{mimetype}};base64,{{imgdata}}">
+{%else%}
+<img class="avtar border border-warning-subtle border border-5" src="...">
+
+{%endif%}
+<h2><strong>{{name}}</strong> </h2>
+<p class="h6">@{{username}}</p>
+<p></p>
+<br>
+{%if bio %}
+<h5><strong>Bio</strong> </h5>
+<p class="h5">{{bio}}</p>
+
+{%endif%}
+
+  
+{% endblock %}

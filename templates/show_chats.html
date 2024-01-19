@@ -1,0 +1,36 @@
+{% extends "layout.html" %}
+{%block head%}
+
+{%endblock%}
+
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+{% if users %} 
+<div class="row row-cols-1 row-cols-md-2 g-4">
+    {%for user in users%}
+    <div class="card text-center" style="width: 18rem;">
+      <img src="data:{{ user['mimetype'] }};base64,{{ user['img'] }}" class="avtar mx-auto d-block border border-warning-subtle border border-5">
+      <div class="card-body">
+        <h5 class="card-title">{{user["name"]}}</h5>
+        <p class="h6">@{{user["username"]}}</p>
+        <p class="card-text">{{user["bio"]}}</p>
+        <form action="/chat"  >
+          <input hidden name="id" value="{{user['id']}}">
+          <button class="btn btn-primary" type="submit">Open Chat</button>
+        </form>
+
+      </div>
+    </div>
+    
+    {%endfor%}
+</div>
+{%else%}
+<div style="text-align: center; font-size: 24px; margin-top: 50px;">
+    <p>No chats found</p>
+</div>
+{%endif%}
+{% endblock %}

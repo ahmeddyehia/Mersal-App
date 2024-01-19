@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{%block head%}
+<link rel="stylesheet" href="/static/chat.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.9.1/font/bootstrap-icons.css">
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+{%endblock%}
+{% block title %}
+Chat
+{% endblock %}
+
+{% block main %}
+
+    <!-- Main container -->
+    <div class="container">
+      <!-- msg-header section starts -->
+      <div class="msg-header">
+        <div class="container1">
+          <img src="data:{{mimetype}};base64,{{img}}" class="msgimg" />
+          <div class="active">
+            <input id="receiver_id" hidden value="{{receiver_id}}">
+            <p>{{user}}</p>
+          </div>
+        </div>
+      </div>
+      <!-- msg-header section ends -->
+
+      <!-- Chat inbox  -->
+      <div class="chat-page">
+        <div class="msg-inbox">
+          <div class="chats">
+            <!-- Message container -->
+            <div class="msg-page">
+              <!-- Incoming messages -->
+              {%if messages%}
+              {%for message in messages%}
+              {%if message["sender_id"]==receiver_id%}
+              <input hidden name="last_message_id" id="last_message_id" value="{{last_message_id}}">
+              <div class="received-chats">
+                <div class="received-msg">
+                  <div class="received-msg-inbox">
+                    <p>
+                        {{message["content"]}}
+                    </p>
+                    <span class="time">{{message["timestamp"]}}</span>
+                  </div>
+                </div>
+              </div>
+              <!-- Outgoing messages -->
+              {%else%}
+              <div class="outgoing-chats">
+                <div class="outgoing-msg">
+                  <div class="outgoing-chats-msg">
+                    <p class="multi-msg">
+                        {{message["content"]}}
+                    </p>
+
+                    <span class="time">{{message["timestamp"]}}</span>
+                  </div>
+                </div>
+              </div>
+              {%endif%}
+
+
+
+              {%endfor%}
+  
+              {%endif%}
+            </div>
+            <div id="msg_container" class="msg-page">
+            </div>
+          <!-- msg-bottom section -->
+
+          <div class="msg-bottom">
+            <div class="input-group">
+                <form action="/chat" method="post" autocomplete="off">    
+             <input
+                type="text"
+                class="form-control"
+                placeholder="Write message..."
+                name="message"
+              />
+              <input hidden type="text" name="id" value="{{receiver_id}}">
+
+              <button type="submit" id="send-btn">
+                <span class="input-group-text send-icon">
+                  <i class="bi bi-send"></i>
+                </span>
+              </button>
+              
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+<!-- Include jQuery (you can download it or use a CDN) -->
+
+<script>
+  $(document).ready(function() {
+      // Set the interval for polling (e.g., every 5 seconds)
+      setInterval(function() {
+          pollForNewMessages();
+      }, 5000); // Adjust the interval as needed
+  
+      function pollForNewMessages() {
+          var lastMessageId = getLastMessageId();
+  
+          // AJAX request to the server to check for new messages
+          $.ajax({
+              url: '/chat?poll=true&id={{ receiver_id }}&last_message_id=' + lastMessageId,
+              method: 'GET',
+              dataType: 'json',
+              success: function(response) {
+                  handleNewMessages(response.messages);
+              },
+              error: function(error) {
+                  console.error('Error polling for new messages:', error);
+              }
+          });
+      }
+  
+      function getLastMessageId() {
+          return $("#last_message_id").val();
+      }
+  
+      function handleNewMessages(messages) {
+          // Assume there is a div with the id "msg_container" where messages will be displayed
+          var chatContainer = $("#msg_container");
+  
+          // Loop through the new messages and append them to the chat container
+          messages.forEach(function(message) {
+              // Create a new message element
+              var messageElement = $("<div class='received-chats'>"
+                  + "<div class='received-msg'>"
+                  + "<div class='received-msg-inbox'>"
+                  + "<p>" + message["content"] + "</p>"
+                  + "<span class='time'>" + message["timestamp"] + "</span>"
+                  + "</div>"
+                  + "</div>"
+                  + "</div>");
+  
+              // Append the message element to the chat container
+              chatContainer.append(messageElement);
+          });
+  
+          // Update the last displayed message ID with the ID of the last message in the array
+          if (messages.length > 0) {
+              $("#last_message_id").val(messages[messages.length - 1].message_id);
+          }
+  
+          // Scroll to the bottom to show the latest messages
+          chatContainer.scrollTop(chatContainer[0].scrollHeight);
+      }
+  });
+  </script>
+
+
+{% endblock %}

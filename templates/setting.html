@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Settings
+{% endblock %}
+
+{% block main %}
+<div class="mb-3">
+    <form action="/profile" method="post" enctype="multipart/form-data">
+        <label for="formFile" class="form-label">Choose your profile image</label>
+        <input  name="file" class="form-control" type="file" id="formFile">
+        <input class="btn btn-primary" type="submit"   value="Change Pic" name="submit">
+    </form>
+  </div>
+<br>
+<div class="mb-3">
+    <form action="/bio" method="post">
+    <label for="exampleFormControlTextarea1" class="form-label">Bio</label>
+    <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="bio"></textarea>
+    <input class="btn btn-primary" type="submit"   value="Add to my profile" name="submit">
+    </form>
+  </div>
+  <div class="mb-3">
+    <a href="/change_pass"> <input class="btn btn-primary" type="submit"   value="Change Password" name="submit"></a>
+  </div>
+  
+  <div class="mb-3">
+    <a href="/delete_account"> <input class="btn btn-danger" type="submit"   value="Delete Account" name="submit"></a>
+  </div>
+  
+{% endblock %}
